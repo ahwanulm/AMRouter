@@ -7,7 +7,7 @@ let cachedModels = null;
 let cacheTimestamp = 0;
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   const now = Date.now();
 
   // Return cached result if still valid

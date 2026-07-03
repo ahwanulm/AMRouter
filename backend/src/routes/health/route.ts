@@ -6,7 +6,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "*",
 };
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   return res.json({ ok: true }, { headers: CORS_HEADERS });
 }
 

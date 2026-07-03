@@ -1,7 +1,7 @@
 
 import { disableTailscale } from "../../../lib/tunnel/index.js";
 
-export async function POST(req: any, res: any) {
+export async function POST(req, res) {
   try {
     const result = await disableTailscale();
     return res.json(result);

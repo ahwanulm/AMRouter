@@ -3,7 +3,7 @@ import { getChartData } from "../../../lib/usageDb.js";
 
 const VALID_PERIODS = new Set(["today", "24h", "7d", "30d", "60d"]);
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const period = searchParams.get("period") || "7d";

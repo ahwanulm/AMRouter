@@ -10,7 +10,7 @@ export async function OPTIONS() {
   return new Response(null, { headers: CORS_HEADERS });
 }
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   return new Response(JSON.stringify(ollamaModels), {
     headers: { "Content-Type": "application/json", ...CORS_HEADERS }
   });

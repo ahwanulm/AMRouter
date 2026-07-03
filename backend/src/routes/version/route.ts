@@ -36,7 +36,7 @@ function compareVersions(a, b) {
   return 0;
 }
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   const currentVersion = pkg.version;
   return Response.json({
     currentVersion,

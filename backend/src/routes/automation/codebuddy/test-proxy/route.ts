@@ -14,7 +14,7 @@ function getVenvPython() {
   return "python3";
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { proxy } = req.body;
     if (!proxy || typeof proxy !== "string") {

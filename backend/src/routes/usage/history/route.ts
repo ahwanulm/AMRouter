@@ -1,7 +1,7 @@
 
 import { getUsageStats } from "../../../lib/usageDb.js";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const stats = await getUsageStats();
     return res.json(stats);

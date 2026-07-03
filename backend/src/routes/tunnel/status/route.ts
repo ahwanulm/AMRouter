@@ -1,7 +1,7 @@
 
 import { getTunnelStatus, getTailscaleStatus, getDownloadStatus } from "../../../lib/tunnel/index.js";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const [tunnel, tailscale] = await Promise.all([getTunnelStatus(), getTailscaleStatus()]);
     const download = getDownloadStatus();

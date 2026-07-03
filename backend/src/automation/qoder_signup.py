@@ -128,7 +128,7 @@ def main():
 
     kwargs = dict(
         headless=args.headless,
-        persistent_context=True,
+        persistent_context=True, no_viewport=True,
         user_data_dir=str(profile_dir),
         humanize=True,
         geoip=True,

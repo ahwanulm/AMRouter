@@ -17,7 +17,7 @@ export async function OPTIONS() {
 
 // GET /v1/audio/voices?provider={p}[&lang=xx]
 // Returns OpenAI-style list with each voice's full model id ready for /v1/audio/speech
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams, origin } = new URL('http://localhost' + req.originalUrl);
     const provider = searchParams.get("provider");

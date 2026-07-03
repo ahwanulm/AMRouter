@@ -1,7 +1,7 @@
 
 import { LOCALE_COOKIE, normalizeLocale, isSupportedLocale } from "../../i18n/config.js";
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { locale } = req.body;
     
@@ -13,7 +13,7 @@ export async function POST_handler(req: any, res: any) {
     }
 
     const normalized = normalizeLocale(locale);
-    const cookieStore = { get: (k: string) => ({ value: (req as any).cookies?.[k] }) };
+    const cookieStore = { get: (k) => ({ value: (req).cookies?.[k] }) };
     cookieStore.set(LOCALE_COOKIE, normalized, {
       path: "/",
       maxAge: 60 * 60 * 24 * 365, // 1 year

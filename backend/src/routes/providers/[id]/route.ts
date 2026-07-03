@@ -63,7 +63,7 @@ function shouldMergeProviderSpecificData(existing, incoming, hasLegacyProxy, has
 }
 
 // GET /api/providers/[id] - Get single connection
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const connection = await getProviderConnectionById(id);
@@ -126,7 +126,7 @@ export async function GET_handler(req: any, res: any, { params }) {
 }
 
 // PUT /api/providers/[id] - Update connection
-export async function PUT_handler(req: any, res: any, { params }) {
+export async function PUT_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const body = req.body;
@@ -214,7 +214,7 @@ export async function PUT_handler(req: any, res: any, { params }) {
 }
 
 // DELETE /api/providers/[id] - Delete connection
-export async function DELETE_handler(req: any, res: any, { params }) {
+export async function DELETE_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const url = new URL('http://localhost' + req.originalUrl);

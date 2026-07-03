@@ -351,7 +351,7 @@ class WeavyService:
         
         launch_kwargs = dict(
             headless=True,
-            persistent_context=True,
+            persistent_context=True, no_viewport=True,
             user_data_dir=str(profile_dir.resolve()),
             humanize=True,
             geoip=True,
@@ -525,7 +525,7 @@ class WeavyService:
         logger.info("[weavy_service] CF bypass: launching Camoufox to POST /execute via browser fetch")
         launch_kwargs = dict(
             headless=True,
-            persistent_context=True,
+            persistent_context=True, no_viewport=True,
             user_data_dir=profile_dir,
             humanize=True,
             geoip=True,

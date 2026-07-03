@@ -7,7 +7,7 @@ import { KiroService } from "../../../../lib/oauth/services/kiro.js";
  * Generate Google/GitHub social login URL for manual callback flow
  * Uses kiro:// custom protocol as required by AWS Cognito
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const provider = searchParams.get("provider"); // "google" or "github"

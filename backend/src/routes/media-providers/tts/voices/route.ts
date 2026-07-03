@@ -19,7 +19,7 @@ function langName(code) {
  *   ?lang=en     (optional filter by lang code)
  *   ?apiKey=xxx  (required for elevenlabs)
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const provider   = searchParams.get("provider") || "edge-tts";

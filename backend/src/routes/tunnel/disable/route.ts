@@ -1,7 +1,7 @@
 
 import { disableTunnel } from "../../../lib/tunnel/index.js";
 
-export async function POST(req: any, res: any) {
+export async function POST(req, res) {
   try {
     const result = await disableTunnel();
     return res.json(result);

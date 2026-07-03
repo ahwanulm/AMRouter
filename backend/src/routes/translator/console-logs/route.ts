@@ -3,7 +3,7 @@ import { clearConsoleLogs, getConsoleLogs, initConsoleLogCapture } from "../../.
 
 initConsoleLogCapture();
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const logs = getConsoleLogs();
     return res.json({ success: true, logs });
@@ -13,7 +13,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     clearConsoleLogs();
     return res.json({ success: true });

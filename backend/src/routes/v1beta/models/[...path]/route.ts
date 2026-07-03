@@ -38,7 +38,7 @@ export async function OPTIONS() {
  * The upstream handleChat returns OpenAI SSE format; we transform it to
  * Gemini SSE format on the fly via transformOpenAISSEToGeminiSSE().
  */
-export async function POST_handler(req: any, res: any, { params }) {
+export async function POST_handler(req, res, { params }) {
   await ensureInitialized();
 
   try {

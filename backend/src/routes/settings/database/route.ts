@@ -2,7 +2,7 @@
 import { exportDb, getSettings, importDb } from "../../../lib/localDb.js";
 import { applyOutboundProxyEnv } from "../../../lib/network/outboundProxy.js";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const payload = await exportDb();
     return res.json(payload);
@@ -12,7 +12,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const payload = req.body;
     await importDb(payload);

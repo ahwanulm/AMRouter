@@ -453,8 +453,9 @@ def _click_canva_authorize_v2(page, email: str) -> bool:
         except Exception: pass
     return _react_invoke_click(page, "Allow") or _react_invoke_click(page, "Continue")
 
-def run_automation(email, password, invite_link, proxy=None, headless=True):
+def run_automation(email, password, invite_link, proxy=None, headless=True, skip_canva=False):
     settings = load_settings_db()
+    if skip_canva: settings["skip_canva"] = True
     import asyncio
     from camoufox.sync_api import Camoufox
 
@@ -505,14 +506,16 @@ def run_automation(email, password, invite_link, proxy=None, headless=True):
             page = browser.new_page()
 
             # 1. Canva Enroll
-            if not enroll_canva_via_email(page, invite_link, email, password, settings):
-                sys.stdout.write(json.dumps({"status": "error", "message": "Gagal pendaftaran Canva — lihat step log"}) + "\n")
+            if not settings.get("skip_canva"):
+                if not enroll_canva_via_email(page, invite_link, email, password, settings):
+                    sys.stdout.write(json.dumps({"status": "error", "message": "Gagal pendaftaran Canva — lihat step log"}) + "\n")
+                    sys.stdout.flush()
+                    return False
+                # Emit canva_enrolled agar Node update DB
+                sys.stdout.write(json.dumps({"canva_enrolled": True}) + "\n")
                 sys.stdout.flush()
-                return False
-
-            # Emit canva_enrolled agar Node update DB
-            sys.stdout.write(json.dumps({"canva_enrolled": True}) + "\n")
-            sys.stdout.flush()
+            else:
+                log_step("Skip Canva enrollment as requested.")
 
             # 2. Leonardo Signup
             # Intercept /api/auth/get-session untuk capture JWT langsung dari response
@@ -548,6 +551,7 @@ def run_automation(email, password, invite_link, proxy=None, headless=True):
             log_step("Membuka Leonardo AI — login page...")
             page.goto("https://app.leonardo.ai/auth/login", wait_until="domcontentloaded", timeout=60000)
             time.sleep(3)
+            page.screenshot(path="leonardo_login_initial.png")
 
             # Setup popup listener SEBELUM klik (event-driven)
             canva_popup = {"page": None}
@@ -556,34 +560,58 @@ def run_automation(email, password, invite_link, proxy=None, headless=True):
                 log_step(f"Popup terdeteksi: {popup_page.url[:60]}")
             browser.on("page", on_popup)
 
-            log_step("Klik 'Continue with Canva'...")
-            click_first(page, ["button:has-text('Continue with Canva')"], timeout_ms=15000)
-            log_step(f"Tombol diklik. URL sekarang: {page.url[:60]}")
-            time.sleep(8)  # tunggu lebih lama
-
-            log_step(f"Pages setelah klik: {[p.url[:50] for p in browser.pages]}")
+            log_step("Fokus & Enter pada tombol 'Canva'...")
+            sels = [
+                "button:has-text('Canva')", 
+                "a:has-text('Canva')",
+                "button[data-slot='button']:has-text('Canva')",
+                "div[role='button']:has-text('Canva')"
+            ]
+            focused = False
+            for sel in sels:
+                try:
+                    loc = page.locator(sel).first
+                    if loc.count() > 0 and loc.is_visible(timeout=3000):
+                        loc.focus(timeout=3000)
+                        page.keyboard.press("Enter")
+                        focused = True
+                        break
+                except: continue
+            
+            if not focused:
+                log_step("GAGAL: Tombol login Canva tidak bisa difokus!")
+                page.screenshot(path="leonardo_login_failed_focus.png")
+            
+            time.sleep(5)
+            page.screenshot(path="leonardo_after_click.png")
+            log_step(f"Interaction selesai. URL sekarang: {page.url[:60]}")
+            time.sleep(10)
+            log_step(f"Pages: {[p.url[:50] for p in browser.pages]}")
 
             # Handle berdasarkan hasilnya
             auth_page = None
-
-            # 1. Popup ter-capture via event listener
             if canva_popup["page"]:
                 auth_page = canva_popup["page"]
-                log_step(f"OAuth via popup event: {auth_page.url[:60]}")
-                try: auth_page.wait_for_load_state("domcontentloaded", timeout=5000)
-                except: pass
+                log_step(f"OAuth popup terdeteksi: {auth_page.url[:60]}")
+                # Jika about:blank, tunggu navigasi
+                if "about:blank" in auth_page.url:
+                    try:
+                        auth_page.wait_for_load_state("domcontentloaded", timeout=10000)
+                        log_step(f"Popup url berubah: {auth_page.url[:60]}")
+                    except: pass
                 _click_canva_authorize_v2(auth_page, email)
                 time.sleep(5)
-
-            # 2. Main page redirect ke Canva
-            elif "canva.com" in page.url.lower():
+            
+            # 2. Cek apakah main page redirect (inline OAuth)
+            elif "canva.com" in page.url:
                 auth_page = page
                 log_step(f"OAuth inline di main page: {page.url[:60]}")
                 _click_canva_authorize_v2(page, email)
                 time.sleep(5)
 
-            # 3. Scan semua pages
+            # 3. Scan semua pages (termasuk yang mungkin baru terbuka tapi telat)
             else:
+                log_step("Scan pages untuk Canva...")
                 for pg in browser.pages:
                     if "canva.com" in pg.url and pg != page:
                         auth_page = pg
@@ -592,7 +620,19 @@ def run_automation(email, password, invite_link, proxy=None, headless=True):
                         time.sleep(5)
                         break
                 else:
-                    log_step(f"PERINGATAN: Tidak ada redirect ke Canva! URL={page.url}")
+                    # Coba klik lagi dengan JS jika belum ada popup
+                    log_step("Belum ada redirect. Mencoba klik via JS...")
+                    page.evaluate("Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Canva'))?.click()")
+                    time.sleep(10)
+                    for pg in browser.pages:
+                        if "canva.com" in pg.url and pg != page:
+                            auth_page = pg
+                            log_step(f"OAuth popup via scan (setelah JS click): {pg.url[:60]}")
+                            _click_canva_authorize_v2(pg, email)
+                            time.sleep(5)
+                            break
+                    else:
+                        log_step(f"PERINGATAN: Tidak ada redirect ke Canva! URL={page.url}")
 
             # Tunggu Leonardo dashboard atau onboarding (max 90s)
             log_step("Menunggu redirect ke Leonardo dashboard/onboarding...")
@@ -849,7 +889,7 @@ if __name__ == "__main__":
         time.sleep(delay)
 
     try:
-        success = run_automation(args.email, args.password, args.invite_link, proxy, args.headless)
+        success = run_automation(args.email, args.password, args.invite_link, proxy, args.headless, skip_canva=args.skip_canva)
         if not success:
             # Emit status:error agar Node handler mark sebagai failed (bukan hanya exit code 0)
             sys.stdout.write(json.dumps({"status": "error", "message": "Automation gagal tanpa detail — cek log"}) + "\n")

@@ -5,7 +5,7 @@ import { getRequestDetails } from "../../../lib/usageDb.js";
  * GET /api/usage/request-details
  * Query parameters: page, pageSize (1-100), provider, model, connectionId, status, startDate, endDate
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     

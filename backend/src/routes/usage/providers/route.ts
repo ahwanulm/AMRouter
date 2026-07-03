@@ -7,7 +7,7 @@ import { AI_PROVIDERS, getProviderByAlias } from "../../../shared/constants/prov
  * GET /api/usage/providers
  * Returns list of unique providers from request details
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const { details } = await getRequestDetails({ pageSize: 9999 });
 

@@ -50,7 +50,7 @@ function countBoundConnections(connections = [], proxyPoolId) {
 }
 
 // GET /api/proxy-pools/[id] - Get proxy pool
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const proxyPool = await getProxyPoolById(id);
@@ -67,7 +67,7 @@ export async function GET_handler(req: any, res: any, { params }) {
 }
 
 // PUT /api/proxy-pools/[id] - Update proxy pool
-export async function PUT_handler(req: any, res: any, { params }) {
+export async function PUT_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const existing = await getProxyPoolById(id);
@@ -92,7 +92,7 @@ export async function PUT_handler(req: any, res: any, { params }) {
 }
 
 // DELETE /api/proxy-pools/[id] - Delete proxy pool
-export async function DELETE_handler(req: any, res: any, { params }) {
+export async function DELETE_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const existing = await getProxyPoolById(id);

@@ -47,7 +47,7 @@ export default {
 `;
 
 // POST /api/proxy-pools/cloudflare-deploy
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const accountId = body.accountId?.trim();

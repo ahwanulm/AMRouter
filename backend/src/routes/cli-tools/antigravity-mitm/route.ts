@@ -65,7 +65,7 @@ function checkPrivilege(pwd) {
 }
 
 // GET - Full MITM status (server + per-tool DNS)
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const status = await getMitmStatus();
     const settings = await getSettings();
@@ -105,7 +105,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST - Start MITM server (cert + server, no DNS)
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { apiKey, sudoPassword, mitmRouterBaseUrl, forceKillPort443 } = req.body;
     const pwd = getPassword(sudoPassword) || await loadEncryptedPassword() || "";
@@ -153,7 +153,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE - Stop MITM server (removes all DNS first, then kills server)
-export async function DELETE_handler(req: any, res: any) {
+export async function DELETE_handler(req, res) {
   try {
     const body = req.body || {};
     const { sudoPassword } = body;
@@ -174,7 +174,7 @@ export async function DELETE_handler(req: any, res: any) {
 }
 
 // PATCH - Toggle DNS for a specific tool (enable/disable)
-export async function PATCH_handler(req: any, res: any) {
+export async function PATCH_handler(req, res) {
   try {
     const { tool, action, sudoPassword } = req.body;
     const pwd = getPassword(sudoPassword) || await loadEncryptedPassword() || "";

@@ -3,10 +3,10 @@ import { getSettings } from "../../../lib/localDb.js";
 import { isOidcConfigured } from "../../../lib/auth/oidc.js";
 import { getDashboardAuthSession } from "../../../lib/auth/dashboardSession.js";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const settings = await getSettings();
-    const cookieStore = { get: (k: string) => ({ value: (req as any).cookies?.[k] }) };
+    const cookieStore = { get: (k) => ({ value: (req).cookies?.[k] }) };
     const session = await getDashboardAuthSession(cookieStore.get("9r_session")?.value);
     const requireLogin = settings.requireLogin !== false;
     const authMode = settings.authMode || "password";

@@ -21,7 +21,7 @@ export async function OPTIONS() {
   });
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   await ensureInitialized();
   
   const clonedReq = request.clone();

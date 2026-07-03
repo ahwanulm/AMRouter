@@ -40,7 +40,7 @@ function isCompatibleProvider(providerId) {
 }
 
 // POST /api/providers/test-batch - Test multiple connections by group
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { mode, providerId } = body;

@@ -7,10 +7,10 @@ import { createProviderConnection } from "../../../../models/index.js";
  * Import and validate access token from Cursor IDE's local SQLite database
  *
  * Request body:
- * - accessToken: string - Access token from cursorAuth/accessToken
- * - machineId: string - Machine ID from storage.serviceMachineId
+ * - accessToken - Access token from cursorAuth/accessToken
+ * - machineId - Machine ID from storage.serviceMachineId
  */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { accessToken, machineId } = req.body;
 
@@ -74,7 +74,7 @@ export async function POST_handler(req: any, res: any) {
  * GET /api/oauth/cursor/import
  * Get instructions for importing Cursor token
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   const cursorService = new CursorService();
   const instructions = cursorService.getTokenStorageInstructions();
 

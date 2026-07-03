@@ -80,7 +80,7 @@ const has9RouterConfig = (config) => {
 };
 
 // GET - Check codex CLI and read current settings
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const isInstalled = await checkCodexInstalled();
     
@@ -107,7 +107,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST - Update 9Router settings (merge with existing config)
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, model, subagentModel } = req.body;
     
@@ -176,7 +176,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE - Remove 9Router settings only (keep other settings)
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const configPath = getCodexConfigPath();
 

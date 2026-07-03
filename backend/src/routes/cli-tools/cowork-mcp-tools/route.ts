@@ -81,7 +81,7 @@ async function probeMcp(url) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { url } = req.body;
     if (!url || typeof url !== "string") {

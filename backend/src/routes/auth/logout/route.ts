@@ -1,7 +1,7 @@
 
 import { clearDashboardAuthCookie } from "../../../lib/auth/dashboardSession.js";
 
-export async function POST(req: any, res: any) {
+export async function POST(req, res) {
   clearDashboardAuthCookie(res);
   res.clearCookie("oidc_state");
   res.clearCookie("oidc_nonce");

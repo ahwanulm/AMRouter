@@ -432,10 +432,12 @@ def _patched_sleep(seconds):
         if chunk <= 0:
             break
         _orig_sleep(chunk)
-        try:
-            update_debug_screenshot(_debug_page)
-        except Exception:
-            pass
+        # Skip screenshots during short sleeps to avoid overhead
+        if seconds > 1.0:
+            try:
+                update_debug_screenshot(_debug_page)
+            except Exception:
+                pass
 
 time.sleep = _patched_sleep
 
@@ -890,7 +892,7 @@ def run_automation(args, settings):
     profile_dir.mkdir(parents=True, exist_ok=True)
     launch_kwargs = dict(
         headless=args.headless,
-        persistent_context=True,
+        persistent_context=True, no_viewport=True,
         user_data_dir=str(profile_dir),
         humanize=True,
         geoip=True,
@@ -900,7 +902,8 @@ def run_automation(args, settings):
         exclude_addons=[DefaultAddons.UBO],
         firefox_user_prefs={
             "network.trr.mode": 5,
-        }
+        },
+        no_viewport=True,
     )
 
     if args.proxy_server:

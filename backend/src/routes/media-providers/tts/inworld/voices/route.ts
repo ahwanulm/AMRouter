@@ -7,7 +7,7 @@ const langNames = new Intl.DisplayNames(["en"], { type: "language" });
  * GET /api/media-providers/tts/inworld/voices[?lang=en]
  * Returns { languages, byLang } grouped by language code (same shape as edge-tts/elevenlabs)
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const langFilter = searchParams.get("lang");

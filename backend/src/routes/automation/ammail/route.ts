@@ -11,7 +11,7 @@ const execAsync = promisify(exec);
 
 export const dynamic = "force-dynamic";
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const settings = await getSettings();
     const client = await getAmmailClientFromSettings();
@@ -152,7 +152,7 @@ export async function GET_handler(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { action } = body;

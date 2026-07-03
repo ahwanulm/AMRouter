@@ -48,7 +48,7 @@ const has9RouterConfig = (config) => {
 };
 
 // GET - Check opencode CLI and read current settings
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const isInstalled = await checkOpenCodeInstalled();
 
@@ -82,7 +82,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST - Apply 9Router as openai-compatible provider (multi-model support)
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, model, models, activeModel, subagentModel } = req.body;
 
@@ -167,7 +167,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // PATCH - Update specific settings (e.g., clear active model)
-export async function PATCH_handler(req: any, res: any) {
+export async function PATCH_handler(req, res) {
   try {
     const { clearActiveModel } = req.body;
     const configPath = getConfigPath();
@@ -203,7 +203,7 @@ export async function PATCH_handler(req: any, res: any) {
 }
 
 // DELETE - Remove 9Router provider or specific models from config
-export async function DELETE_handler(req: any, res: any) {
+export async function DELETE_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const modelToRemove = searchParams.get("model");

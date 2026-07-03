@@ -19,7 +19,7 @@ function getActiveModelLocks(connection) {
     .filter((lock) => lock.active);
 }
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const connections = await getProviderConnections();
     const models = [];
@@ -63,7 +63,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { action, provider, model } = req.body;
 

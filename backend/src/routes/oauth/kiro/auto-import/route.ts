@@ -7,7 +7,7 @@ import { join } from "path";
  * GET /api/oauth/kiro/auto-import
  * Auto-detect and extract Kiro refresh token from AWS SSO cache
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const cachePath = join(homedir(), ".aws/sso/cache");
 

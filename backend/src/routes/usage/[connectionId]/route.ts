@@ -18,7 +18,7 @@ function isAuthExpiredMessage(usage) {
 /**
  * Refresh credentials using executor and update database
  * @param {boolean} force - Skip needsRefresh check and always attempt refresh
- * @returns Promise<{ connection, refreshed: boolean }>
+ * @returns Promise<{ connection, refreshed }>
  */
 async function refreshAndUpdateCredentials(connection, force = false, proxyOptions = null) {
   const executor = getExecutor(connection.provider);
@@ -121,7 +121,7 @@ async function refreshAndUpdateCredentials(connection, force = false, proxyOptio
 /**
  * GET /api/usage/[connectionId] - Get usage data for a specific connection
  */
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   let connection;
   try {
     const { connectionId } = await params;

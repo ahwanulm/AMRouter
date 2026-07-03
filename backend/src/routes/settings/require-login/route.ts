@@ -1,7 +1,7 @@
 
 import { getSettings } from "../../../lib/localDb.js";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const settings = await getSettings();
     const requireLogin = settings.requireLogin !== false;

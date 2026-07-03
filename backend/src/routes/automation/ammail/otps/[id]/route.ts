@@ -3,7 +3,7 @@ import { getAmmailOtp, markAmmailOtpUsed, deleteAmmailOtp } from "../../../../..
 
 export const dynamic = "force-dynamic";
 
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   try {
     const resolvedParams = await params;
     const otpId = parseInt(resolvedParams.id);
@@ -41,7 +41,7 @@ export async function GET_handler(req: any, res: any, { params }) {
   }
 }
 
-export async function POST_handler(req: any, res: any, { params }) {
+export async function POST_handler(req, res, { params }) {
   try {
     const resolvedParams = await params;
     const otpId = parseInt(resolvedParams.id);

@@ -2,7 +2,7 @@
 import { testSingleConnection } from "./testUtils.js";
 
 // POST /api/providers/[id]/test - Test connection
-export async function POST_handler(req: any, res: any, { params }) {
+export async function POST_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const result = await testSingleConnection(id);

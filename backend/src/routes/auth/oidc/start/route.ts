@@ -10,7 +10,7 @@ import {
 } from "../../../../lib/auth/oidc.js";
 import { shouldUseSecureCookie } from "../../../../lib/auth/dashboardSession.js";
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const config = await getOidcRuntimeConfig();
     if (!config) {
@@ -32,7 +32,7 @@ export async function GET_handler(req: any, res: any) {
       codeChallenge: challenge,
     });
 
-    const cookieStore = { get: (k: string) => ({ value: (req as any).cookies?.[k] }) };
+    const cookieStore = { get: (k) => ({ value: (req).cookies?.[k] }) };
     const baseOptions = {
       httpOnly: true,
       secure: shouldUseSecureCookie(request),

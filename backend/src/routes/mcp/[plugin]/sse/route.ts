@@ -3,7 +3,7 @@ import { registerSession, unregisterSession, findPlugin } from "../../../../lib/
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   // Cowork disabled: MCP stdio bridge spawns arbitrary processes (RCE risk).
   return new Response("Cowork is disabled", { status: 403 });
   const { plugin } = await params;

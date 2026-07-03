@@ -38,7 +38,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export async function POST_handler(req: any, res: any, { params }) {
+export async function POST_handler(req, res, { params }) {
   try {
     const resolvedParams = await params;
     const accountId = parseInt(resolvedParams.id);

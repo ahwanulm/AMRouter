@@ -50,7 +50,7 @@ const has9RouterConfig = (auth) => {
   return baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1") || baseUrl.includes("9router");
 };
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const installed = await checkInstalled();
     if (!installed) {
@@ -69,7 +69,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, model } = req.body;
     if (!baseUrl || !apiKey || !model) {
@@ -104,7 +104,7 @@ export async function POST_handler(req: any, res: any) {
   }
 }
 
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const auth = await readJson(getAuthPath());
     if (!auth) {

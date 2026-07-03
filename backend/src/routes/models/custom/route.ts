@@ -4,7 +4,7 @@ import { getCustomModels, addCustomModel, deleteCustomModel } from "../../../mod
 export const dynamic = "force-dynamic";
 
 // GET /api/models/custom - List all custom models
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const models = await getCustomModels();
     return res.json({ models });
@@ -15,7 +15,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST /api/models/custom - Add custom model
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { providerAlias, id, type, name } = req.body;
     if (!providerAlias || !id) {
@@ -30,7 +30,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE /api/models/custom?providerAlias=xxx&id=yyy&type=zzz
-export async function DELETE_handler(req: any, res: any) {
+export async function DELETE_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const providerAlias = searchParams.get("providerAlias");

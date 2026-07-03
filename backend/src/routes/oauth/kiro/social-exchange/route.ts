@@ -7,7 +7,7 @@ import { createProviderConnection } from "../../../../models/index.js";
  * Exchange authorization code for tokens (Google/GitHub social login)
  * Callback URL will be in format: kiro://kiro.kiroAgent/authenticate-success?code=XXX&state=YYY
  */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { code, codeVerifier, provider } = req.body;
 

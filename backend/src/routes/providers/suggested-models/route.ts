@@ -3,7 +3,7 @@ import { FILTERS } from "./filters.js";
 
 export const dynamic = "force-dynamic";
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const { searchParams } = new URL('http://localhost' + req.originalUrl);
   const url = searchParams.get("url");
   const type = searchParams.get("type");

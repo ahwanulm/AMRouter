@@ -51,7 +51,7 @@ const readSettings = async () => {
 };
 
 // GET - Check claude CLI and read current settings
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const isInstalled = await checkClaudeInstalled();
     
@@ -64,12 +64,18 @@ export async function GET(req: any, res: any) {
     }
 
     const settings = await readSettings();
-    const has9Router = !!(settings?.env?.ANTHROPIC_BASE_URL);
+    const baseUrl = settings?.env?.ANTHROPIC_BASE_URL || "";
+    
+    // Check if the configured URL points to a 9Router instance (local, tunnel, or cloud)
+    const is9Router = baseUrl.includes("localhost:3001") || 
+                      baseUrl.includes("127.0.0.1:3001") || 
+                      baseUrl.includes(".trycloudflare.com") || 
+                      baseUrl.includes("9router.com");
 
     return res.json({
       installed: true,
       settings: settings,
-      has9Router: has9Router,
+      has9Router: is9Router,
       settingsPath: getClaudeSettingsPath(),
     });
   } catch (error) {
@@ -82,7 +88,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST - Backup old fields and write new settings
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { env } = req.body;
     
@@ -154,7 +160,7 @@ const RESET_ENV_KEYS = [
 ];
 
 // DELETE - Reset settings (remove env fields)
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const settingsPath = getClaudeSettingsPath();
 

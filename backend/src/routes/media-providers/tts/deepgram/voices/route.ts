@@ -8,7 +8,7 @@ const langNames = new Intl.DisplayNames(["en"], { type: "language" });
  * Returns { languages, byLang } grouped by language code (same shape as edge-tts/elevenlabs/inworld)
  * Each Deepgram voice = one model (canonical_name like "aura-2-thalia-en")
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const langFilter = searchParams.get("lang");

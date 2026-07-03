@@ -4,7 +4,7 @@ import { getDisabledModels, disableModels, enableModels } from "../../../lib/dis
 export const dynamic = "force-dynamic";
 
 // GET /api/models/disabled?providerAlias=xxx
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const providerAlias = searchParams.get("providerAlias");
@@ -18,7 +18,7 @@ export async function GET_handler(req: any, res: any) {
 }
 
 // POST /api/models/disabled  body: { providerAlias, ids: [...] }
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { providerAlias, ids } = req.body;
     if (!providerAlias || !Array.isArray(ids)) {
@@ -33,7 +33,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE /api/models/disabled?providerAlias=xxx[&id=yyy]
-export async function DELETE_handler(req: any, res: any) {
+export async function DELETE_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const providerAlias = searchParams.get("providerAlias");

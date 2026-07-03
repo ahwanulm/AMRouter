@@ -62,7 +62,7 @@ function normalizeMiniMaxVoices(data) {
  * GET /api/media-providers/tts/minimax/voices[?provider=minimax|minimax-cn&voice_type=all]
  * Returns { languages, byLang } grouped for the shared TTS voice picker.
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const provider = searchParams.get("provider") === "minimax-cn" ? "minimax-cn" : "minimax";

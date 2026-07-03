@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 initConsoleLogCapture();
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const encoder = new TextEncoder();
   const emitter = getConsoleEmitter();
   const state = { closed: false, send: null, sendClear: null, keepalive: null };

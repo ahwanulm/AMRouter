@@ -2,7 +2,7 @@
 import { killAppProcesses } from "../../../lib/appUpdater.js";
 
 // Shutdown app to release file locks for manual update
-export async function POST(req: any, res: any) {
+export async function POST(req, res) {
   try {
     await killAppProcesses();
   } catch { /* best effort */ }

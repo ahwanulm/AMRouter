@@ -3,7 +3,7 @@ import { enableTunnel } from "../../../lib/tunnel/index.js";
 
 const DNS_WARMUP_DELAY_MS = 8000;
 
-export async function POST(req: any, res: any) {
+export async function POST(req, res) {
   try {
     const result = await enableTunnel();
     // Wait for DNS warmup to propagate at Cloudflare edge after tunnel registered

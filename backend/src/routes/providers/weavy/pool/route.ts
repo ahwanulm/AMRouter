@@ -3,7 +3,7 @@ import { getProviderConnections, updateProviderConnection } from "../../../../mo
 
 // GET /api/providers/weavy/pool
 // Returns all Weavy accounts with JWT + Firebase token data for copy-paste
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const connections = await getProviderConnections({ provider: "weavy" });
 

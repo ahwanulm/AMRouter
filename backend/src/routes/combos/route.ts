@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const VALID_NAME_REGEX = /^[a-zA-Z0-9_.\-]+$/;
 
 // GET /api/combos - Get all combos
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const combos = await getCombos();
     return res.json({ combos });
@@ -18,7 +18,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST /api/combos - Create new combo
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { name, models, kind } = body;

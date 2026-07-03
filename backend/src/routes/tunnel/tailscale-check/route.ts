@@ -32,7 +32,7 @@ async function isDaemonRunning() {
   }
 }
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const installed = isTailscaleInstalled();
     const platform = os.platform();

@@ -27,7 +27,7 @@ function verifyAmmailSignature(secret, bodyText, signatureHeader) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const rawBody = JSON.stringify(req.body || {});
     const settings = await getSettings();

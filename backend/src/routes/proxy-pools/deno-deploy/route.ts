@@ -44,7 +44,7 @@ const DENO_RELAY_CODE = `Deno.serve(async (request) => {
   }
 });`;
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const denoToken = body.denoToken?.trim();

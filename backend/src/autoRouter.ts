@@ -100,9 +100,10 @@ export async function buildAutoRouter(): Promise<Router> {
 
     let mod: Record<string, unknown>;
     try {
+      console.log(`[router] Attempting to import: ${file}`);
       mod = await import(pathToFileURL(file).href);
     } catch (err) {
-      console.warn(`[router] Failed to import ${rel}:`, (err as Error).message);
+      console.warn(`[router] Failed to import ${rel}:`, err);
       continue;
     }
 

@@ -363,8 +363,7 @@ try:
         print(json.dumps({"status": "error", "message": f"JWT not found. get-session={res.status_code}. Cookie keys: {[c.split('=')[0].strip() for c in cookies_in]}"}))
 except Exception as e:
     print(json.dumps({"status": "error", "message": str(e)}))
-`;\n
-\n
+`;
 
 
       const execFileAsync = promisify(execFile);

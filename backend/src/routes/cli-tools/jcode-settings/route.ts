@@ -107,7 +107,7 @@ const writeProviderEnv = async (env) => {
   await fs.writeFile(envPath, content, "utf-8");
 };
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   const isInstalled = await checkJcodeInstalled();
 
   if (!isInstalled) {
@@ -128,7 +128,7 @@ export async function GET(req: any, res: any) {
   });
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, models } = req.body;
 
@@ -186,7 +186,7 @@ export async function POST_handler(req: any, res: any) {
   }
 }
 
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const config = await readConfig();
 

@@ -74,7 +74,7 @@ const readAgentModel = async (agentDir) => {
 };
 
 // GET - Check openclaw CLI and read current settings
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const isInstalled = await checkOpenClawInstalled();
     
@@ -133,7 +133,7 @@ const writeAgentModels = async (agentDir, model, baseUrl, apiKey) => {
 };
 
 // POST - Update 9Router settings (merge with existing settings)
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     // agentModels: { [agentId]: modelId } for per-agent override
     const { baseUrl, apiKey, model, agentModels = {} } = req.body;
@@ -233,7 +233,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE - Remove 9Router settings only (keep other settings)
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const settingsPath = getOpenClawSettingsPath();
 

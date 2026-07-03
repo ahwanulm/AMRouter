@@ -82,7 +82,7 @@ async function probeMediaProvider(provider, apiKey) {
 }
 
 // POST /api/providers/validate - Validate API key with provider
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const provider = normalizeProviderId(body.provider);

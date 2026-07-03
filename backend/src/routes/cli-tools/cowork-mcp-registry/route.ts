@@ -58,7 +58,7 @@ async function fetchAll() {
   return out.filter((s) => (seen.has(s.url) ? false : (seen.add(s.url), true)));
 }
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const { searchParams } = new URL('http://localhost' + req.originalUrl);
   const force = searchParams.get("refresh") === "1";
   const cache = gcache();

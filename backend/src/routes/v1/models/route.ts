@@ -432,7 +432,7 @@ export async function OPTIONS() {
  * GET /v1/models - OpenAI compatible models list (LLM/chat models only by default).
  * For other capabilities use /v1/models/{kind} (image, tts, stt, embedding, image-to-text, web).
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const data = await buildModelsList([LLM_KIND]);
     return Response.json({ object: "list", data }, {

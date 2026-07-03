@@ -18,7 +18,7 @@ const CUSTOM_EMBEDDING_DEFAULTS = {
 };
 
 // GET /api/provider-nodes - List all provider nodes
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const nodes = await getProviderNodes();
     return res.json({ nodes });
@@ -29,7 +29,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST /api/provider-nodes - Create provider node
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { name, prefix, apiType, baseUrl, type } = body;

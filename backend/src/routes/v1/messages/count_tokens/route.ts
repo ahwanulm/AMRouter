@@ -14,7 +14,7 @@ export async function OPTIONS() {
 /**
  * POST /v1/messages/count_tokens - Mock token count response
  */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   let body;
   try {
     body = req.body;

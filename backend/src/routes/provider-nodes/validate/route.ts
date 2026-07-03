@@ -50,7 +50,7 @@ const getChatErrorMessage = (status) => {
 };
 
 // POST /api/provider-nodes/validate - Validate API key against base URL
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { baseUrl, apiKey, type, modelId } = body;

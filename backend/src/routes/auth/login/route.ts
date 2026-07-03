@@ -14,7 +14,7 @@ function isTunnelRequest(req, settings) {
   return (tunnelHost && host === tunnelHost) || (tailscaleHost && host === tailscaleHost);
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const ip = getClientIp(req);
     const lock = checkLock(ip);

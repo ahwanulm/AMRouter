@@ -5,7 +5,7 @@ import { getConsistentMachineId } from "../../shared/utils/machineId.js";
 export const dynamic = "force-dynamic";
 
 // GET /api/keys - List API keys
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const keys = await getApiKeys();
     return res.json({ keys });
@@ -16,7 +16,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST /api/keys - Create new API key
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { name } = body;

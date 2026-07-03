@@ -1,7 +1,7 @@
 
 import { testProxyUrl } from "../../../lib/network/proxyTest.js";
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const result = await testProxyUrl({

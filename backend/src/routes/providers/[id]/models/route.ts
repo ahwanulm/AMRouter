@@ -378,7 +378,7 @@ const PROVIDER_MODELS_CONFIG = {
 /**
  * GET /api/providers/[id]/models - Get models list from provider
  */
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const connection = await getProviderConnectionById(id);

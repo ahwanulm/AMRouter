@@ -133,16 +133,68 @@ export async function handleImageGenerationCore({
   let parsed;
   try {
     if (adapter.parseResponse) {
-      parsed = await adapter.parseResponse(providerResponse, {
-        headers,
-        log,
-        streamToClient,
-        onRequestSuccess,
-        url,
-        requestBody,
-        model,
-        body,
-      });
+      try {
+        parsed = await adapter.parseResponse(providerResponse, {
+          headers,
+          log,
+          streamToClient,
+          onRequestSuccess,
+          url,
+          requestBody,
+          model,
+          body,
+        });
+      } catch (parseError) {
+        // Special case for Leonardo/GraphQL auth errors that come in 200 OK
+        const isAuthError =
+          parseError.message?.toLowerCase().includes("unauthorized") ||
+          parseError.message?.toLowerCase().includes("token") ||
+          parseError.message?.toLowerCase().includes("auth");
+
+        if (isAuthError && !adapter.noAuth && !executor?.noAuth) {
+          log?.info?.("TOKEN", `${provider.toUpperCase()} | detected auth error in 200 OK response, triggering refresh`);
+          const newCredentials = await refreshWithRetry(
+            () => executor.refreshCredentials(credentials, log),
+            3,
+            log
+          );
+
+          if (newCredentials?.accessToken || newCredentials?.apiKey) {
+            log?.info?.("TOKEN", `${provider.toUpperCase()} | refreshed for image generation (retry)`);
+            Object.assign(credentials, newCredentials);
+            if (onCredentialsRefreshed) await onCredentialsRefreshed(newCredentials);
+
+            // Re-run adapter.parseResponse with new credentials if possible
+            // Note: This requires re-fetching since the original response was consumed
+            const retryBody = await adapter.buildBody(model, body);
+            const retryHeaders = adapter.buildHeaders(credentials, retryBody, model, body);
+            const retryUrl = adapter.buildUrl(model, credentials);
+            const retryRes = await fetch(retryUrl, {
+              method: "POST",
+              headers: retryHeaders,
+              body: serializeRequestBody(retryBody),
+            });
+            if (retryRes.ok) {
+              parsed = await adapter.parseResponse(retryRes, {
+                headers: retryHeaders,
+                log,
+                streamToClient,
+                onRequestSuccess,
+                url: retryUrl,
+                requestBody: retryBody,
+                model,
+                body,
+              });
+            } else {
+              throw new Error(`Retry after refresh failed with status ${retryRes.status}`);
+            }
+          } else {
+            throw parseError;
+          }
+        } else {
+          throw parseError;
+        }
+      }
       // Codex streaming case: returns an SSE Response directly
       if (parsed?.sseResponse) {
         return { success: true, response: parsed.sseResponse };

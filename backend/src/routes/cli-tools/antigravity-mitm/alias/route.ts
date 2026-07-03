@@ -6,7 +6,7 @@ import { getMitmStatus } from "../../../../mitm/manager.js";
 import { writeAliasForTool } from "../../../../lib/mitmAliasCache.js";
 
 // GET - Get MITM aliases for a tool
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const toolName = searchParams.get("tool");
@@ -19,7 +19,7 @@ export async function GET_handler(req: any, res: any) {
 }
 
 // PUT - Save MITM aliases for a specific tool
-export async function PUT_handler(req: any, res: any) {
+export async function PUT_handler(req, res) {
   try {
     const { tool, mappings } = req.body;
 

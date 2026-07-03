@@ -243,7 +243,7 @@ async function writeSkipApprovals(managedServers) {
   return { written: Object.keys(skip).length };
 }
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const installed = await checkInstalled();
     if (!installed) {
@@ -310,7 +310,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   // Cowork disabled: spawns arbitrary processes (RCE risk).
   return res.status(403).json({ error: "Cowork is disabled" });
   try {
@@ -393,7 +393,7 @@ export async function POST_handler(req: any, res: any) {
   }
 }
 
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const meta = await readJson(await getMetaPath());
     if (!meta?.appliedId) {

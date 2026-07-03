@@ -14,7 +14,7 @@ function hasBrew() {
   try { execSync("which brew", { stdio: "ignore", windowsHide: true, env: { ...process.env, PATH: EXTENDED_PATH } }); return true; } catch { return false; }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   const body = req.body.catch(() => ({}));
   const platform = os.platform();
   const isWindows = platform === "win32";

@@ -56,7 +56,7 @@ async function pollDeployment(deploymentId, token, maxMs = 120000) {
 }
 
 // POST /api/proxy-pools/vercel-deploy
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const vercelToken = body.vercelToken;

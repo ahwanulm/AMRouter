@@ -9,7 +9,7 @@ const langNames = new Intl.DisplayNames(["en"], { type: "language" });
  * Returns { languages, byLang } grouped by language - same format as edge-tts
  * Uses direct DB read (no mutex) to avoid blocking on concurrent TTS requests
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const langFilter = searchParams.get("lang");

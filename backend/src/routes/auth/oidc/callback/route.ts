@@ -16,7 +16,7 @@ function clearOidcCookies(cookieStore) {
   cookieStore.delete("oidc_code_verifier");
 }
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const url = new URL('http://localhost' + req.originalUrl);
   const error = url.searchParams.get("error");
   if (error) {
@@ -29,7 +29,7 @@ export async function GET_handler(req: any, res: any) {
     return res.redirect(new URL("/login?error=oidc_missing_code", getPublicOrigin(request)));
   }
 
-  const cookieStore = { get: (k: string) => ({ value: (req as any).cookies?.[k] }) };
+  const cookieStore = { get: (k) => ({ value: (req).cookies?.[k] }) };
   const storedState = cookieStore.get("oidc_state")?.value;
   const storedNonce = cookieStore.get("oidc_nonce")?.value;
   const codeVerifier = cookieStore.get("oidc_code_verifier")?.value;

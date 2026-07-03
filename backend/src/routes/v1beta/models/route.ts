@@ -17,7 +17,7 @@ export async function OPTIONS() {
  * GET /v1beta/models - Gemini compatible models list
  * Returns models in Gemini API format
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     // Collect all models from all providers
     const models = [];

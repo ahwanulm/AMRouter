@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const file = searchParams.get("file");

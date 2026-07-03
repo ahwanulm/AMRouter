@@ -42,7 +42,7 @@ function buildUsageMap(connections = []) {
 }
 
 // GET /api/proxy-pools - List proxy pools
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const isActive = toBoolean(searchParams.get("isActive"));
@@ -75,7 +75,7 @@ export async function GET_handler(req: any, res: any) {
 }
 
 // POST /api/proxy-pools - Create proxy pool
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const normalized = normalizeProxyPoolInput(body);

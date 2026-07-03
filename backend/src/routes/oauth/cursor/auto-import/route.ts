@@ -174,7 +174,7 @@ async function extractTokensViaCLI(dbPath) {
  * Auto-detect and extract Cursor tokens from local SQLite database.
  * Strategy: better-sqlite3 → sqlite3 CLI → manual fallback
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const platform = process.platform;
     const candidates = getCandidatePaths(platform);

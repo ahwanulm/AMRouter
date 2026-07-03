@@ -32,7 +32,7 @@ async function persistRefreshedCredentials(connection, newCredentials) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { provider, model, body } = req.body;
 

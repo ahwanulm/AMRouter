@@ -27,14 +27,14 @@ export async function OPTIONS() {
   });
 }
 
-export async function POST_handler(req: any, res: any) {  
+export async function POST_handler(req, res) {  
   // Fallback to local handling
   await ensureInitialized();
   
   const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
   const webReq = new Request(fullUrl, {
     method: req.method,
-    headers: new Headers(req.headers as any),
+    headers: new Headers(req.headers),
     body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
   });
   

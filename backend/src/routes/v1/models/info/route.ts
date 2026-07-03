@@ -91,7 +91,7 @@ export async function OPTIONS() {
 }
 
 // GET /v1/models/info?id={alias}/{modelId} — metadata for a single model
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const { searchParams } = new URL('http://localhost' + req.originalUrl);
   const id = searchParams.get("id");
   if (!id) {

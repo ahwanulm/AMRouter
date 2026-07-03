@@ -6,7 +6,7 @@ import { createProviderConnection } from "../../../../models/index.js";
  * POST /api/oauth/kiro/import
  * Import and validate refresh token from Kiro IDE
  */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { refreshToken } = req.body;
 

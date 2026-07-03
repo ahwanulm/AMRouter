@@ -6,7 +6,7 @@ import { parseModel } from "../../../../open-sse/services/model.js";
 import { getProviderConnections } from "../../../lib/localDb.js";
 import { getExecutor } from "../../../../open-sse/executors/index.js";
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { step, body } = req.body;
 

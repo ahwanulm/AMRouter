@@ -7,12 +7,12 @@ async function canAccessTestRoute() {
   const settings = await getSettings();
   if (settings.requireLogin === false) return true;
 
-  const cookieStore = { get: (k: string) => ({ value: (req as any).cookies?.[k] }) };
+  const cookieStore = { get: (k) => ({ value: (req).cookies?.[k] }) };
   const token = cookieStore.get("auth_token")?.value;
   return await verifyDashboardAuthToken(token);
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     if (!(await canAccessTestRoute())) {
       return res.status(401).json({ error: "Unauthorized" });

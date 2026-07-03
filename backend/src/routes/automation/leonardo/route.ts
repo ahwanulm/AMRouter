@@ -59,7 +59,7 @@ async function getConfig() {
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const config = await getConfig();
     return res.json({ ok: true, config });
@@ -68,7 +68,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function PUT_handler(req: any, res: any) {
+export async function PUT_handler(req, res) {
   try {
     const body = req.body;
     // Deduplicate models by id
@@ -87,7 +87,7 @@ export async function PUT_handler(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { action } = body;

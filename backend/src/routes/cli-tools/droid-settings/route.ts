@@ -51,7 +51,7 @@ const has9RouterConfig = (settings) => {
 };
 
 // GET - Check droid CLI and read current settings
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const isInstalled = await checkDroidInstalled();
     
@@ -80,7 +80,7 @@ export async function GET(req: any, res: any) {
 // POST - Update 9Router customModels (merge with existing settings)
 // Accepts either `model` (string, legacy single-model) or `models` (array of strings, multi-model)
 // Also accepts `activeModel` to set which model is active/primary
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, model, models, activeModel } = req.body;
     
@@ -170,7 +170,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE - Remove 9Router customModels only (keep other settings)
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const settingsPath = getDroidSettingsPath();
 

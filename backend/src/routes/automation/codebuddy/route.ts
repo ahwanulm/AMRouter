@@ -107,7 +107,7 @@ if (!global._codebuddyState) {
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const { getAdapter } = await import("../../../lib/db/driver.js");
     const db = await getAdapter();
@@ -219,7 +219,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const { action } = body;
@@ -575,9 +575,14 @@ export async function POST_handler(req: any, res: any) {
       try {
         const { getAdapter } = await import("../../../lib/db/driver.js");
         const db = await getAdapter();
+        // Update all completed/failed/stopped jobs to dismissed
         db.run(
-          "UPDATE codebuddyJobs SET status = 'dismissed' WHERE id = (SELECT id FROM codebuddyJobs ORDER BY createdAt DESC LIMIT 1)"
+          "UPDATE codebuddyJobs SET status = 'dismissed' WHERE status IN ('completed', 'failed', 'stopped', 'error')"
         );
+        // Also clear memory state if no job is actually running
+        if (global._codebuddyState && !global._codebuddyState.activeProcesses?.size) {
+          global._codebuddyState.activeJobId = null;
+        }
       } catch (e) {
         console.error("clear-logs error:", e);
       }

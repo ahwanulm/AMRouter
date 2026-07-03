@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { file, content } = req.body;
 

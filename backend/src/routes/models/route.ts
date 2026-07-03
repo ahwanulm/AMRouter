@@ -5,7 +5,7 @@ import { AI_MODELS } from "../../shared/constants/config.js";
 import { getProviderAlias } from "../../shared/constants/providers.js";
 
 // GET /api/models - Get models with aliases
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const modelAliases = await getModelAliases();
     const disabled = await getDisabledModels();
@@ -33,7 +33,7 @@ export async function GET(req: any, res: any) {
 }
 
 // PUT /api/models - Update model alias
-export async function PUT_handler(req: any, res: any) {
+export async function PUT_handler(req, res) {
   try {
     const body = req.body;
     const { model, alias } = body;

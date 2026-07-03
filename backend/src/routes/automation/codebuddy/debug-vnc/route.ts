@@ -4,7 +4,7 @@ import fs from "fs";
 const SCREENSHOT_PATH = "/tmp/9router_debug.png";
 
 // GET: serve the latest debug screenshot or status
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const { searchParams } = new URL('http://localhost' + req.originalUrl);
   const action = searchParams.get("action");
 

@@ -2,7 +2,7 @@
 import { deleteApiKey, getApiKeyById, updateApiKey } from "../../../lib/localDb.js";
 
 // GET /api/keys/[id] - Get single key
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const key = await getApiKeyById(id);
@@ -17,7 +17,7 @@ export async function GET_handler(req: any, res: any, { params }) {
 }
 
 // PUT /api/keys/[id] - Update key
-export async function PUT_handler(req: any, res: any, { params }) {
+export async function PUT_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const body = req.body;
@@ -41,7 +41,7 @@ export async function PUT_handler(req: any, res: any, { params }) {
 }
 
 // DELETE /api/keys/[id] - Delete API key
-export async function DELETE_handler(req: any, res: any, { params }) {
+export async function DELETE_handler(req, res, { params }) {
   try {
     const { id } = await params;
 

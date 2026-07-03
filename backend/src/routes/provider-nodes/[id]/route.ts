@@ -2,7 +2,7 @@
 import { deleteProviderConnectionsByProvider, deleteProviderNode, getProviderConnections, getProviderNodeById, updateProviderConnection, updateProviderNode } from "../../../models/index.js";
 
 // PUT /api/provider-nodes/[id] - Update provider node
-export async function PUT_handler(req: any, res: any, { params }) {
+export async function PUT_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const body = req.body;
@@ -81,7 +81,7 @@ export async function PUT_handler(req: any, res: any, { params }) {
 }
 
 // DELETE /api/provider-nodes/[id] - Delete provider node and its connections
-export async function DELETE_handler(req: any, res: any, { params }) {
+export async function DELETE_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const node = await getProviderNodeById(id);

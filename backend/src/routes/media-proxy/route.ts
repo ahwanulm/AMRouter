@@ -39,7 +39,7 @@ function isAllowedUrl(urlStr) {
  * GET /api/media-proxy?url=<encoded_url>
  * Server-side proxy for video/image CDN URLs to bypass browser CORS restrictions.
  */
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   const { searchParams } = new URL('http://localhost' + req.originalUrl);
   const url = searchParams.get("url");
 

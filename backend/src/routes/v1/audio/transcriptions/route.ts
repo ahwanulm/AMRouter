@@ -16,13 +16,13 @@ export async function OPTIONS() {
 import { Readable } from "node:stream";
 
 /** POST /v1/audio/transcriptions - OpenAI Whisper compatible STT */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
   const webReq = new Request(fullUrl, {
     method: req.method,
-    headers: new Headers(req.headers as any),
+    headers: new Headers(req.headers),
     body: req.method !== 'GET' && req.method !== 'HEAD' ? Readable.toWeb(req) : undefined,
     duplex: 'half'
-  } as any);
+  });
   return await handleStt(webReq);
 }

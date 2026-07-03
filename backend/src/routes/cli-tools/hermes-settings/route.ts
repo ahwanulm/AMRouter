@@ -98,7 +98,7 @@ const has9RouterConfig = (modelCfg) => {
   return modelCfg.provider === "custom" && /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(modelCfg.base_url);
 };
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const installed = await checkHermesInstalled();
     if (!installed) {
@@ -118,7 +118,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, model } = req.body;
     if (!baseUrl || !model) {
@@ -153,7 +153,7 @@ export async function POST_handler(req: any, res: any) {
   }
 }
 
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const configPath = getHermesConfigPath();
     let yaml = "";

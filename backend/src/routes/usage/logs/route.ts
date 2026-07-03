@@ -1,7 +1,7 @@
 
 import { getRecentLogs } from "../../../lib/usageDb.js";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const logs = await getRecentLogs(200);
     return res.json(logs);

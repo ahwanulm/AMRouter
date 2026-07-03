@@ -32,15 +32,32 @@ const STATUS_GETTERS = {
 };
 
 // Batch endpoint: gather all CLI tool statuses in one round-trip
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   const entries = await Promise.all(
     Object.entries(STATUS_GETTERS).map(async ([toolId, getter]) => {
       try {
-        const res = await getter();
-        const data = await res.json();
-        return [toolId, data];
-      } catch {
-        return [toolId, null];
+        let resultData = null;
+        
+        // Mock res object to capture data from Express-style handlers
+        const mockRes = {
+          json: (data) => { 
+            resultData = data; 
+            return { json: () => data }; // compatibility for .json().json()
+          },
+          status: function() { return this; }
+        };
+
+        const maybeRes = await (getter)(req, mockRes);
+        
+        // If the getter returned a standard Web Response instead of using mockRes
+        if (maybeRes && typeof maybeRes.json === 'function' && !resultData) {
+          resultData = await maybeRes.json();
+        }
+
+        return [toolId, resultData];
+      } catch (err) {
+        console.error(`Error fetching status for ${toolId}:`, err);
+        return [toolId, { installed: false, error: true }];
       }
     })
   );

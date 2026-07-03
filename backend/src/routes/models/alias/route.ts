@@ -4,7 +4,7 @@ import { getModelAliases, setModelAlias, deleteModelAlias } from "../../../model
 export const dynamic = "force-dynamic";
 
 // GET /api/models/alias - Get all aliases
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const aliases = await getModelAliases();
     return res.json({ aliases });
@@ -15,7 +15,7 @@ export async function GET(req: any, res: any) {
 }
 
 // PUT /api/models/alias - Set model alias
-export async function PUT_handler(req: any, res: any) {
+export async function PUT_handler(req, res) {
   try {
     const body = req.body;
     const { model, alias } = body;
@@ -34,7 +34,7 @@ export async function PUT_handler(req: any, res: any) {
 }
 
 // DELETE /api/models/alias?alias=xxx - Delete alias
-export async function DELETE_handler(req: any, res: any) {
+export async function DELETE_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const alias = searchParams.get("alias");

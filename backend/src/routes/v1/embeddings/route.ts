@@ -16,11 +16,11 @@ export async function OPTIONS() {
 /**
  * POST /v1/embeddings - OpenAI-compatible embeddings endpoint
  */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
   const webReq = new Request(fullUrl, {
     method: req.method,
-    headers: new Headers(req.headers as any),
+    headers: new Headers(req.headers),
     body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
   });
   return await handleEmbeddings(webReq);

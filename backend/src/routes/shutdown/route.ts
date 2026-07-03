@@ -1,6 +1,6 @@
 
 
-export async function POST(req: any, res: any) {
+export async function POST(req, res) {
   if (process.env.NODE_ENV === "production") {
     return res.status(403).json({ success: false, message: "Not allowed in production" });
   }

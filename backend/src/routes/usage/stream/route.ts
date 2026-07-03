@@ -2,7 +2,7 @@ import { getUsageStats, statsEmitter, getActiveRequests } from "../../../lib/usa
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   const encoder = new TextEncoder();
   const state = { closed: false, keepalive: null, send: null, sendPending: null, cachedStats: null };
 

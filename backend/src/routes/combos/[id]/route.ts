@@ -6,7 +6,7 @@ import { resetComboRotation } from "../../../../open-sse/services/combo.js";
 const VALID_NAME_REGEX = /^[a-zA-Z0-9_.\-]+$/;
 
 // GET /api/combos/[id] - Get combo by ID
-export async function GET_handler(req: any, res: any, { params }) {
+export async function GET_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const combo = await getComboById(id);
@@ -23,7 +23,7 @@ export async function GET_handler(req: any, res: any, { params }) {
 }
 
 // PUT /api/combos/[id] - Update combo
-export async function PUT_handler(req: any, res: any, { params }) {
+export async function PUT_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const body = req.body;
@@ -61,7 +61,7 @@ export async function PUT_handler(req: any, res: any, { params }) {
 }
 
 // DELETE /api/combos/[id] - Delete combo
-export async function DELETE_handler(req: any, res: any, { params }) {
+export async function DELETE_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const prev = await getComboById(id);

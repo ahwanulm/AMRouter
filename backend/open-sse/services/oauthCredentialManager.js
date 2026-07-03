@@ -61,8 +61,12 @@ export function isCodexRefreshStale(credentials, nowMs = Date.now()) {
 export function shouldRefreshCredentials(provider, credentials, nowMs = Date.now()) {
   if (!credentials) return false;
 
-  if (provider === "leonardo" && !credentials.accessToken) {
-    return true;
+  if (provider === "leonardo") {
+    const expiresAtMs = getCredentialExpiryMs(credentials);
+    // Proactive refresh if expires in less than 5 minutes or no token
+    if (!expiresAtMs || expiresAtMs - nowMs < 5 * 60 * 1000) {
+      return true;
+    }
   }
 
   const expiresAtMs = getCredentialExpiryMs(credentials);

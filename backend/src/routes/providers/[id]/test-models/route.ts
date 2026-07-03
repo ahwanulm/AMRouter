@@ -10,7 +10,7 @@ import { pingModelByKind } from "../../../models/test/ping.js";
  * id = connectionId — used only to resolve provider + model list.
  * Actual requests go through the internal endpoint that matches each model kind.
  */
-export async function POST_handler(req: any, res: any, { params }) {
+export async function POST_handler(req, res, { params }) {
   try {
     const { id } = await params;
     const connection = await getProviderConnectionById(id);

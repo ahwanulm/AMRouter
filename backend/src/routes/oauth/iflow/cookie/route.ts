@@ -6,7 +6,7 @@ import { createProviderConnection } from "../../../../models/index.js";
  * POST /api/oauth/iflow/cookie
  * Body: { cookie: "BXAuth=xxx; ..." }
  */
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { cookie } = req.body;
 

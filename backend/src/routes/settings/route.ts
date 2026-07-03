@@ -11,7 +11,7 @@ const SETTINGS_RESPONSE_HEADERS = {
   "Cache-Control": "no-store"
 };
 
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const settings = await getSettings();
     const { password, oidcClientSecret, ...safeSettings } = settings;
@@ -33,7 +33,7 @@ export async function GET(req: any, res: any) {
   }
 }
 
-export async function PATCH_handler(req: any, res: any) {
+export async function PATCH_handler(req, res) {
   try {
     const body = req.body;
 

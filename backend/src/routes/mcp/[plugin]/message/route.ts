@@ -4,7 +4,7 @@ import { sendToChild, findPlugin } from "../../../../lib/mcp/stdioSseBridge.js";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST_handler(req: any, res: any, { params }) {
+export async function POST_handler(req, res, { params }) {
   // Cowork disabled: MCP stdio bridge spawns arbitrary processes (RCE risk).
   return res.status(403).json({ error: "Cowork is disabled" });
   const { plugin } = await params;

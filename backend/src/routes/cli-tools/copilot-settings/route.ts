@@ -39,7 +39,7 @@ const get9RouterEntry = (config) => {
 };
 
 // GET - Read current copilot config
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const config = await readConfig();
     const entry = get9RouterEntry(config);
@@ -59,7 +59,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST - Apply 9Router config to chatLanguageModels.json
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const { baseUrl, apiKey, models } = req.body;
 
@@ -118,7 +118,7 @@ export async function POST_handler(req: any, res: any) {
 }
 
 // DELETE - Remove 9Router entry from chatLanguageModels.json
-export async function DELETE(req: any, res: any) {
+export async function DELETE(req, res) {
   try {
     const configPath = getConfigPath();
 

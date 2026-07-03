@@ -47,7 +47,7 @@ async function normalizeProxyPoolId(proxyPoolId) {
 }
 
 // GET /api/providers - List all connections
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const connections = await getProviderConnections();
 
@@ -84,7 +84,7 @@ export async function GET(req: any, res: any) {
 }
 
 // POST /api/providers - Create new connection (API Key only, OAuth via separate flow)
-export async function POST_handler(req: any, res: any) {
+export async function POST_handler(req, res) {
   try {
     const body = req.body;
     const provider = normalizeProviderId(body.provider);

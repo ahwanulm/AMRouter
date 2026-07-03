@@ -120,7 +120,7 @@ async function getTodayUsageMap(connectionIds) {
   }
 }
 
-export async function GET_handler(req: any, res: any) {
+export async function GET_handler(req, res) {
   try {
     await backfillCodexEmails();
 

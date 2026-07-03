@@ -6,7 +6,7 @@ import { getDefaultPricing } from "../../shared/constants/pricing.js";
  * GET /api/pricing
  * Get current pricing configuration (merged user + defaults)
  */
-export async function GET(req: any, res: any) {
+export async function GET(req, res) {
   try {
     const pricing = await getPricing();
     return res.json(pricing);
@@ -22,9 +22,9 @@ export async function GET(req: any, res: any) {
 /**
  * PATCH /api/pricing
  * Update pricing configuration
- * Body: { provider: { model: { input: number, output: number, cached: number, ... } } }
+ * Body: { provider: { model: { input, output, cached, ... } } }
  */
-export async function PATCH_handler(req: any, res: any) {
+export async function PATCH_handler(req, res) {
   try {
     const body = req.body;
 
@@ -88,7 +88,7 @@ export async function PATCH_handler(req: any, res: any) {
  * Reset pricing to defaults
  * Query params: ?provider=xxx&model=yyy (optional)
  */
-export async function DELETE_handler(req: any, res: any) {
+export async function DELETE_handler(req, res) {
   try {
     const { searchParams } = new URL('http://localhost' + req.originalUrl);
     const provider = searchParams.get("provider");
