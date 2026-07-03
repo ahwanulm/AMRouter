@@ -298,17 +298,24 @@ def enroll_canva_via_email(page, invite_link: str, email: str, password: str, se
         "input[name='email']",
         "input[inputmode='email']",
         "input[placeholder*='email' i]",
+        "input[autocomplete='email']",
+        "input[data-testid*='email' i]",
+        "input[aria-label*='email' i]",
+        "input[autocomplete='username']",
+        "input:not([type='password']):not([type='hidden']):not([type='checkbox'])",
     ]
     email_input = None
-    deadline_in = time.time() + 15
+    deadline_in = time.time() + 20
     while time.time() < deadline_in and email_input is None:
         for sel in email_input_selectors:
             try:
                 loc = page.locator(sel).first
-                if loc.count() > 0 and loc.is_visible(timeout=400):
+                if loc.count() > 0 and loc.is_visible(timeout=500):
                     email_input = loc; break
             except Exception: continue
-        if email_input is None: time.sleep(0.5)
+        if email_input is None:
+            time.sleep(0.8)
+            log_step(f"Menunggu email input... URL: {page.url[:50]}")
     
     if email_input is None:
         log_step("Email field tidak ditemukan!")
@@ -535,8 +542,8 @@ def run_automation(email, password, invite_link, proxy=None, headless=True):
                         captured_jwt["value"] = jwt
                         log_step(f"JWT captured dari get-session intercept!")
                 except Exception: pass
-            # Pasang di context (semua page) bukan hanya page ini
-            browser.contexts[0].on("response", handle_response)
+            # Di Camoufox persistent_context, 'browser' IS BrowserContext
+            browser.on("response", handle_response)
 
             log_step("Membuka Leonardo AI — login page...")
             page.goto("https://app.leonardo.ai/auth/login", wait_until="domcontentloaded", timeout=60000)
