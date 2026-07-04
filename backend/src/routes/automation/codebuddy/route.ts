@@ -725,6 +725,12 @@ function executeCodeBuddySignup(accountId, jobId, idx, settings) {
         if (captchaKey) {
           args.push(`--2captcha-key=${captchaKey}`);
         }
+        // Stagger browser launches: each slot gets a 5s delay window
+        // so concurrent instances don't all launch at the same time
+        const slotDelay = (idx % 3) * 5; // max 3 concurrent → 0s, 5s, 10s
+        if (slotDelay > 0) {
+          args.push(`--stagger-delay=${slotDelay}`);
+        }
       } else if (isWeavy) {
         if (account.signupMethod === "google" || account.email.endsWith("@gmosel.com") || account.email.endsWith("@gmail.com")) {
           args.push("--gsuite");

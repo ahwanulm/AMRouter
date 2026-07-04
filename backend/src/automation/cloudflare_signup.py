@@ -528,6 +528,8 @@ def main():
                         help="Paste CF API token manual — skip seluruh automation")
     parser.add_argument("--account-id", default="", dest="account_id_arg",
                         help="Cloudflare Account ID (wajib jika pakai --token)")
+    parser.add_argument("--stagger-delay", type=int, default=0, dest="stagger_delay",
+                        help="Delay (detik) sebelum launch browser, untuk stagger concurrent instances")
     args = parser.parse_args()
 
     # ── Shortcut: jika user paste token manual, langsung simpan ──────────────
@@ -557,6 +559,12 @@ def main():
             log_step(f"Ammail inbox warning: {e}")
 
     log_step("Meluncurkan browser Camoufox (anti-fingerprint)...")
+
+    # Stagger delay — when running concurrent instances, delay launch to avoid
+    # resource contention and Cloudflare rate-limit detection
+    if args.stagger_delay > 0:
+        log_step(f"Stagger delay {args.stagger_delay}s...")
+        time.sleep(args.stagger_delay)
 
     proxy_dict = None
     if args.proxy_server:
@@ -1238,8 +1246,17 @@ def main():
 
             # 5. Select Workers AI permission from dropdown
             # The form has 3 dropdowns in Permissions row: [Account] [Select/search] [Select...]
-            # Click the second dropdown (searchable), type "Workers AI", click "Workers AI"
-            time.sleep(1)
+            # Wait for React form to fully hydrate before searching
+            try:
+                page.wait_for_selector(
+                    "input[aria-autocomplete], [role='combobox'], input[placeholder*='Select' i]",
+                    timeout=10000
+                )
+                time.sleep(1)
+                log_step("React form loaded, searching dropdowns")
+            except Exception as e:
+                log_step(f"Wait for form timeout: {e}, continuing anyway")
+                time.sleep(2)
 
             workers_ai_permission_set = False
 
