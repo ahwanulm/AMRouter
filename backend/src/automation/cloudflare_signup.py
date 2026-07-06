@@ -1314,6 +1314,32 @@ def main():
         # ── Strategy B: Browser UI — /profile/api-tokens/create (dropdown form)
         if not workers_ai_token:
             log_step("Trying browser UI token creation")
+
+            # Setup route interception BEFORE navigating — capture CF's own token API call
+            token_from_route = []
+            def _token_route_handler(route):
+                req = route.request
+                try:
+                    resp = route.fetch()
+                    if req.method == "POST" and "tokens" in req.url:
+                        log_step(f"Route: POST {req.url} → {resp.status}")
+                        if resp.status in (200, 201):
+                            try:
+                                d = resp.json()
+                                if d.get("result", {}).get("value"):
+                                    token_from_route.append(d["result"]["value"])
+                                    log_step(f"TOKEN via route: {d['result']['value'][:10]}...")
+                            except Exception:
+                                pass
+                    route.fulfill(response=resp)
+                except Exception as re:
+                    try: route.continue_()
+                    except Exception: pass
+            try:
+                page.route("**/user/tokens**", _token_route_handler)
+            except Exception as re:
+                log_step(f"Route setup: {re}")
+
             for create_url in [
                 "https://dash.cloudflare.com/profile/api-tokens/create",
                 f"https://dash.cloudflare.com/{account_id}/api-tokens/create",
@@ -1832,7 +1858,41 @@ def main():
                                 log_step(f"Account Resources selected via account_id: {txt2[:60]}")
                         else:
                             page.keyboard.press("Escape")
-                            log_step(f"Account Resources: no options for 'all' or account_id — leaving empty")
+                            log_step(f"Account Resources: no options for 'all' or account_id — trying React inject")
+
+                            # React fiber inject: walk up fiber tree to find onChange handler
+                            inject_result = page.evaluate(f"""
+                                () => {{
+                                    const ctrls = Array.from(document.querySelectorAll('[class*="react-select__control"]'));
+                                    const arCtrl = ctrls.find(c => {{
+                                        const ph = c.querySelector('[class*="react-select__placeholder"]');
+                                        return ph && ph.textContent.trim() === 'Select...';
+                                    }});
+                                    if (!arCtrl) return 'No Select... control';
+                                    const input = arCtrl.querySelector('input');
+                                    if (!input) return 'No input';
+                                    const fk = Object.keys(input).find(k => k.startsWith('__reactFiber') || k.startsWith('__reactInternalInstance'));
+                                    if (!fk) return 'No fiber';
+                                    let fiber = input[fk];
+                                    for (let i = 0; i < 25; i++) {{
+                                        if (!fiber || !fiber.return) break;
+                                        fiber = fiber.return;
+                                        const p = fiber.memoizedProps;
+                                        if (p && typeof p.onChange === 'function') {{
+                                            try {{
+                                                p.onChange(
+                                                    {{value: '{account_id}', label: 'My Account'}},
+                                                    {{action: 'select-option'}}
+                                                );
+                                                return 'React onChange called OK';
+                                            }} catch(e) {{ return 'onChange error: ' + e.message; }}
+                                        }}
+                                    }}
+                                    return 'onChange not found in fiber';
+                                }}
+                            """)
+                            log_step(f"Account Resources React inject: {inject_result}")
+                            time.sleep(1)
             except Exception as e:
                 log_step(f"Account Resources error: {e}")
 
@@ -2012,8 +2072,12 @@ def main():
 
         # Final API key to save
         final_api_key = workers_ai_token or global_key or ""
+        
+        if not workers_ai_token and token_from_route:
+            workers_ai_token = token_from_route[0]
+            log_step(f"Token from route: {workers_ai_token[:10]}...")
 
-        if not final_api_key:
+        if not workers_ai_token:
             die("Tidak ada API key yang bisa digunakan")
 
         log_step("Selesai! Menyimpan kredensial ke 9router...")
