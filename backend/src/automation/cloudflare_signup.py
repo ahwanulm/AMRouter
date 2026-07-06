@@ -972,18 +972,18 @@ def main():
         else:
             log_step("Memuat Cloudflare Dashboard...")
             try:
-                page.goto("https://dash.cloudflare.com/home", wait_until="domcontentloaded", timeout=30000)
-                wait_for_cf_clearance(page, timeout=20)
+                # Navigate to profile page — CF redirects to /{account_id}/... URL
+                page.goto("https://dash.cloudflare.com/profile", wait_until="domcontentloaded", timeout=30000)
+                wait_for_cf_clearance(page, timeout=10)
                 time.sleep(3)
+                # If URL has account_id, capture it now
+                _m_profile = re.search(r"/([a-f0-9]{32})(?:/|$)", page.url)
+                if _m_profile:
+                    _early_account_id = _m_profile.group(1)
+                    log_step(f"Account ID from profile URL: {_early_account_id[:8]}...")
+                    account_id = _early_account_id
             except Exception as e:
                 log_step(f"Dashboard load warning: {e}")
-                try:
-                    page = browser.new_page()
-                    page.goto("https://dash.cloudflare.com/home", wait_until="domcontentloaded", timeout=30000)
-                    wait_for_cf_clearance(page, timeout=20)
-                    time.sleep(3)
-                except Exception as e2:
-                    log_step(f"New page also failed: {e2}")
 
 
         # Extract account_id — try multiple methods
@@ -1031,22 +1031,42 @@ def main():
                     log_step(f"Account ID from JS: {account_id[:8]}...")
             except Exception as e:
                 log_step(f"account_id from JS error: {e}")
-        # Method 3: CF API /accounts using session cookies
+        # Method 3: CF API /accounts using page.request.fetch (carries browser session cookies)
         if not account_id:
             try:
-                log_step("Mengambil Account ID via CF API dengan session cookie...")
-                cookies = page.context.cookies()
-                cookie_str = "; ".join(f"{c['name']}={c['value']}" for c in cookies if "cloudflare" in c.get("domain",""))
-                req = urllib.request.Request("https://api.cloudflare.com/client/v4/accounts?per_page=1")
-                req.add_header("Cookie", cookie_str)
-                req.add_header("User-Agent", "Mozilla/5.0 Chrome/125.0")
-                with urllib.request.urlopen(req, timeout=10) as r:
-                    data = json.loads(r.read())
+                log_step("Mengambil Account ID via CF API (page.request.fetch)...")
+                api_resp = page.request.fetch(
+                    "https://api.cloudflare.com/client/v4/accounts?per_page=1",
+                    method="GET",
+                    headers={"Accept": "application/json"}
+                )
+                log_step(f"CF /accounts status: {api_resp.status}")
+                if api_resp.status == 200:
+                    data = api_resp.json()
                     if data.get("success") and data.get("result"):
                         account_id = data["result"][0]["id"]
                         log_step(f"Account ID via API: {account_id[:8]}...")
+                else:
+                    log_step(f"CF /accounts response: {api_resp.text()[:200]}")
             except Exception as e:
                 log_step(f"account_id via API error: {e}")
+
+        # Method 4: Navigate to /home and wait for account_id in URL redirect
+        if not account_id:
+            try:
+                log_step("Navigasi /home untuk dapat account_id dari URL...")
+                page.goto("https://dash.cloudflare.com/", wait_until="domcontentloaded", timeout=20000)
+                for _ in range(10):
+                    time.sleep(1)
+                    m4 = re.search(r"/([a-f0-9]{32})(?:/|$)", page.url)
+                    if m4:
+                        account_id = m4.group(1)
+                        log_step(f"Account ID from / redirect: {account_id[:8]}...")
+                        break
+                if not account_id:
+                    log_step(f"/ redirect final URL: {page.url}")
+            except Exception as e:
+                log_step(f"Method 4 error: {e}")
 
         # ── Step 9/10: Buat Workers AI Token via Session API ─────────────────
         global_key = None
