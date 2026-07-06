@@ -1378,73 +1378,102 @@ def main():
             log_step(f"After permission selection (set={workers_ai_permission_set})")
             time.sleep(1)
 
-            # 5b. Select "Read" from the third dropdown (React custom dropdown)
-            # The "Select..." dropdown is a React custom dropdown — need to click it first
+            # 5b. Select "Edit" from the third dropdown (React custom dropdown)
+            # From screenshot: row is [Account ▼][Workers AI ▼][Select... ▼]
+            # Need to click the 3rd dropdown (Select...) which is the permission level
             read_set = False
             time.sleep(0.5)
 
-            # Strategy: click the "Select..." dropdown button, then click "Read"
+            # Strategy A: JS — find all React-Select containers, click the one showing "Select..."
             try:
-                # Find the "Select..." placeholder dropdown and click it
-                for sel in [
-                    "button:has-text('Select...')",
-                    "[class*='select']:has-text('Select...')",
-                    "div[class*='control']:has-text('Select...')",
-                    "*:has-text('Select...')",
-                ]:
-                    try:
-                        el = page.locator(sel).last  # use .last since "Select" appears in many places
-                        if el.count() > 0 and el.is_visible(timeout=2000):
-                            el.click()
-                            time.sleep(1)
-                            log_step(f"Clicked 'Select...' via: {sel}")
-                            # Now click "Read" from the opened dropdown
-                            for read_sel in ["text='Read'", "[role='option']:has-text('Read')", "li:has-text('Read')"]:
-                                try:
-                                    r = page.locator(read_sel).first
-                                    if r.count() > 0 and r.is_visible(timeout=2000):
-                                        r.click()
-                                        time.sleep(0.5)
-                                        log_step(f"Read selected via: {read_sel}")
-                                        read_set = True
-                                        break
-                                except Exception:
-                                    continue
-                            if read_set:
+                result = page.evaluate("""
+                    () => {
+                        // Find all elements with placeholder "Select..."
+                        const all = Array.from(document.querySelectorAll('*'));
+                        for (const el of all) {
+                            if (el.children.length === 0 && el.textContent.trim() === 'Select...') {
+                                el.click();
+                                return 'clicked placeholder: ' + el.tagName + ' ' + el.className;
+                            }
+                        }
+                        return 'placeholder not found';
+                    }
+                """)
+                log_step(f"JS click Select...: {result}")
+                time.sleep(1)
+                # Now look for Edit or Read option in dropdown
+                for perm_label in ["Edit", "Read"]:
+                    for read_sel in [f"text='{perm_label}'", f"[role='option']:has-text('{perm_label}')", f"li:has-text('{perm_label}')"]:
+                        try:
+                            r = page.locator(read_sel).first
+                            if r.count() > 0 and r.is_visible(timeout=1500):
+                                r.click()
+                                time.sleep(0.5)
+                                log_step(f"{perm_label} selected via: {read_sel}")
+                                read_set = True
                                 break
-                    except Exception:
-                        continue
+                        except Exception:
+                            continue
+                    if read_set:
+                        break
             except Exception as e:
-                log_step(f"Read dropdown click: {e}")
+                log_step(f"Strategy A JS click: {e}")
 
-            # Strategy B: use bounding box — the "Select..." is the 3rd dropdown, find by position
+            # Strategy B: bounding box — the Select... is to the right of Workers AI row
             if not read_set:
                 try:
-                    # Workers AI dropdown bbox → the Select... is to its right
-                    wa_loc = page.locator("*:has-text('Workers AI')").first
-                    wa_box = wa_loc.bounding_box()
-                    if wa_box:
-                        # "Select..." dropdown is to the right of Workers AI
-                        select_x = wa_box['x'] + wa_box['width'] + 120  # offset right
-                        select_y = wa_box['y'] + wa_box['height'] / 2
-                        page.mouse.click(select_x, select_y)
-                        time.sleep(1)
-                        log_step(f"Clicked Select... at estimated position ({select_x:.0f},{select_y:.0f})")
-                        page.screenshot(path="/tmp/cf_after_select_click.png")
-                        # Find Read option
-                        for read_sel in ["text='Read'", "[role='option']:has-text('Read')", "li:has-text('Read')"]:
-                            try:
-                                r = page.locator(read_sel).first
-                                if r.count() > 0 and r.is_visible(timeout=2000):
-                                    r.click()
-                                    time.sleep(0.5)
-                                    log_step(f"Read selected (positional) via: {read_sel}")
-                                    read_set = True
+                    # Find the Workers AI input in the permissions row
+                    wa_inputs = page.locator("input[aria-autocomplete]").all()
+                    for wa_inp in wa_inputs:
+                        try:
+                            if "Workers AI" in (wa_inp.input_value() or ""):
+                                wa_box = wa_inp.bounding_box()
+                                if wa_box:
+                                    # The Select... dropdown is to the right
+                                    select_x = wa_box["x"] + wa_box["width"] + 200
+                                    select_y = wa_box["y"] + wa_box["height"] / 2
+                                    page.mouse.click(select_x, select_y)
+                                    time.sleep(1)
+                                    log_step(f"Positional click Select... at ({select_x:.0f},{select_y:.0f})")
+                                    page.screenshot(path="/tmp/cf_after_select_click.png")
+                                    for perm_label in ["Edit", "Read"]:
+                                        for read_sel in [f"text='{perm_label}'", f"[role='option']:has-text('{perm_label}')"]:
+                                            try:
+                                                r = page.locator(read_sel).first
+                                                if r.count() > 0 and r.is_visible(timeout=1500):
+                                                    r.click()
+                                                    time.sleep(0.5)
+                                                    log_step(f"{perm_label} selected (positional)")
+                                                    read_set = True
+                                                    break
+                                            except Exception:
+                                                continue
+                                        if read_set:
+                                            break
                                     break
-                            except Exception:
-                                continue
+                        except Exception:
+                            continue
                 except Exception as e:
-                    log_step(f"Read positional: {e}")
+                    log_step(f"Strategy B positional: {e}")
+
+            # Strategy C: keyboard Tab navigation
+            if not read_set:
+                try:
+                    page.keyboard.press("Tab")
+                    time.sleep(0.5)
+                    page.keyboard.press("Tab")
+                    time.sleep(0.5)
+                    page.keyboard.press("Enter")
+                    time.sleep(0.8)
+                    # Try arrow down to navigate options
+                    page.keyboard.press("ArrowDown")
+                    time.sleep(0.3)
+                    page.keyboard.press("Enter")
+                    time.sleep(0.5)
+                    log_step("Read/Edit via Tab+Enter keyboard")
+                    read_set = True
+                except Exception as e:
+                    log_step(f"Strategy C keyboard: {e}")
 
             log_step(f"Read access level set: {read_set}")
             page.screenshot(path="/tmp/cf_after_read_select.png")
@@ -1532,20 +1561,35 @@ def main():
             page.screenshot(path="/tmp/cf_token_result.png")
             log_step("Screenshot token result saved")
 
-            for sel in ["code", "input[readonly]", "input[type='text'][readonly]",
-                        "[data-testid='token-value']", ".cf-input-code",
-                        "input[class*='token']", "input[class*='code']", "input[class*='api']"]:
-                try:
-                    el = page.locator(sel).first
-                    if el.is_visible(timeout=4000):
-                        val = el.input_value() if "input" in sel else el.text_content()
-                        val = (val or "").strip()
-                        if val and len(val) > 10:
-                            workers_ai_token = val
-                            log_step(f"Workers AI Token berhasil! ({len(val)} chars): {val[:12]}...")
-                            break
-                except Exception:
-                    continue
+            # CF token result page shows token in a dashed-border div as plain text
+            # Also check <code>, <input readonly>, etc.
+            # Try cfut_ pattern directly first from page body (most reliable)
+            try:
+                body_text = page.inner_text("body")
+                import re as _re_tok
+                cfut_m = _re_tok.search(r'\b(cfut_[A-Za-z0-9_\-]{30,})\b', body_text)
+                if cfut_m:
+                    workers_ai_token = cfut_m.group(1)
+                    log_step(f"Token dari body regex: {workers_ai_token[:12]}...")
+            except Exception as _e:
+                log_step(f"Body token regex: {_e}")
+
+            # Fallback: try specific selectors
+            if not workers_ai_token:
+                for sel in ["code", "input[readonly]", "input[type='text'][readonly]",
+                            "[data-testid='token-value']", ".cf-input-code",
+                            "input[class*='token']", "input[class*='code']", "input[class*='api']"]:
+                    try:
+                        el = page.locator(sel).first
+                        if el.is_visible(timeout=2000):
+                            val = el.input_value() if "input" in sel else el.text_content()
+                            val = (val or "").strip()
+                            if val and len(val) > 10 and ' ' not in val:
+                                workers_ai_token = val
+                                log_step(f"Token dari selector {sel}: {val[:12]}...")
+                                break
+                    except Exception:
+                        continue
 
             # Fallback: extract token-like string from body (cfp_ or similar)
             if not workers_ai_token:
