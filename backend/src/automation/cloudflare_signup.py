@@ -1126,21 +1126,57 @@ def main():
                                         full = ammail_request(_ammail_base_url, _ammail_api_key, f"/messages/{urllib.parse.quote(str(mid))}")
                                         msg_body = full.get("message", full) if isinstance(full, dict) else {}
                                         body = str(msg_body.get('body', '') or msg_body.get('html', '') or msg_body.get('text', '') or full.get('body', '') or full.get('html', '') or full.get('text', ''))
-                                        m = re.search(r'\b(\d{6})\b', body)
-                                        if m:
-                                            otp_code = m.group(1)
-                                            log_step(f"OTP untuk Global API Key: {otp_code}")
-                                            break
+                                        # Find ALL 6-digit codes in body, prefer ones near "verification" or "code"
+                                        import re as _re_otp
+                                        # Prefer code near context words
+                                        ctx_m = _re_otp.search(r'(?:verification|verify|code|token)[^\d]{0,20}(\d{6})', body, _re_otp.I)
+                                        if not ctx_m:
+                                            ctx_m = _re_otp.search(r'(\d{6})(?:[^\d]{0,20}(?:verification|verify|code|token))', body, _re_otp.I)
+                                        if not ctx_m:
+                                            # Fallback: any 6-digit code that isn't 000000 or repeated digits
+                                            for mm in _re_otp.finditer(r'\b(\d{6})\b', body):
+                                                cand = mm.group(1)
+                                                if cand != '000000' and len(set(cand)) > 2:
+                                                    ctx_m = mm
+                                                    break
+                                        if ctx_m:
+                                            otp_code = ctx_m.group(1) if hasattr(ctx_m, 'group') and ctx_m.lastindex else ctx_m.group(0)
+                                            # Use group 1 if present (context match), else group 0
+                                            try: otp_code = ctx_m.group(1)
+                                            except: otp_code = ctx_m.group(0)
+                                            if otp_code != '000000' and len(set(otp_code)) > 2:
+                                                log_step(f"OTP untuk Global API Key: {otp_code}")
+                                                break
                             except Exception as _otp_e:
                                 log_step(f"OTP poll error: {_otp_e}")
                             if otp_code:
                                 break
 
                         if otp_code:
-                            otp_input = page.locator("input[type='text'], input[placeholder*='code'], input[placeholder*='Code']").first
-                            if otp_input.count() > 0:
+                            # Try dialog-specific selectors first to avoid cookie consent inputs
+                            otp_input = None
+                            for otp_sel in [
+                                "[role='dialog'] input[type='text']",
+                                "[aria-modal='true'] input[type='text']",
+                                "input[autocomplete='one-time-code']",
+                                "input[maxlength='6']",
+                                "input[placeholder*='code' i]",
+                                "input[placeholder*='verification' i]",
+                                "input[id*='code' i]",
+                            ]:
+                                try:
+                                    el = page.locator(otp_sel).first
+                                    if el.count() > 0 and el.is_visible(timeout=2000):
+                                        otp_input = el
+                                        log_step(f"OTP input found: {otp_sel}")
+                                        break
+                                except Exception:
+                                    continue
+                            if otp_input:
                                 otp_input.fill(otp_code)
                                 time.sleep(0.5)
+                            else:
+                                log_step("OTP input not found via dialog selectors")
                                 for btn_sel in ["button:has-text('Verify')", "button:has-text('Continue')", "button:has-text('Submit')", "button[type='submit']"]:
                                     try:
                                         b = page.locator(btn_sel).first
